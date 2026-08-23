@@ -48,6 +48,8 @@
 		"#lib/*": "./src/lib/*"
 	},
 	"dependencies": {
-		"markdown-it": "^15.0.0"
+		"markdown-it": "^15.0.0",
+		"openai": "^7.5.0",
+		"zod": "^4.4.3"
 	}
 }
