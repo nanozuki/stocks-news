@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { portfolio } from '../portfolio.svelte';
 	import { searchStocks } from '../stocks.remote';
-	import { getStock, type StockCandidate } from '../stocks';
+	import type { StockCandidate } from '../stocks';
 
 	let query = $state('');
 	let candidates = $state<StockCandidate[] | null>(null);
@@ -24,9 +24,7 @@
 	}
 
 	function follow(candidate: StockCandidate) {
-		const stock = getStock(candidate.symbol);
-		if (!stock) return;
-		portfolio.follow(stock);
+		portfolio.follow(candidate);
 	}
 </script>
 

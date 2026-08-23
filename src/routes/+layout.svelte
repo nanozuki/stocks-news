@@ -34,6 +34,6 @@
 	</header>
 	<main class="mx-auto max-w-6xl px-5 py-10 sm:px-8 sm:py-14">{@render children()}</main>
 	<footer class="mx-auto max-w-6xl px-5 py-8 text-xs text-base-content/35 sm:px-8">
-		Sample news only. Not investment advice.
+		News summaries are not investment advice.
 	</footer>
 </div>

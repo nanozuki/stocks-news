@@ -43,7 +43,7 @@ Root layout
 
 - Stock symbol
 - Company name
-- One-sentence company description
+- Exchange and country
 - Unfollow button
 
 The stock's main content links to `/stocks/:symbol`. The unfollow button is a separate action and
@@ -66,7 +66,7 @@ Root layout
 
 - Stock symbol
 - Company name
-- The same one-sentence company description used by `<Stock />`
+- Exchange and country
 - A follow or unfollow control for the displayed stock
 
 ### `<StockNews />`
@@ -87,8 +87,8 @@ loading.
 SvelteKit's error page handles invalid stock symbols and other missing routes. It includes a link to
 `/`.
 
-## Deferred design
+## Portfolio state
 
-This is a single-user application. One client-side object will manage followed-stock state and
-persistence in `localStorage`. Its interface, UI states, and the data-loading design for stock
-details and news will be specified later.
+This is a single-user application. One client-side object manages followed-stock state and persists
+it in `localStorage`. Stock detail pages resolve their symbol through the stock-search remote
+function before requesting news.

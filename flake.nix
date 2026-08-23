@@ -1,5 +1,5 @@
 {
-  description = "Description for the project";
+  description = "Development environment for Stock News";
   inputs = {
     flake-parts.url = "github:hercules-ci/flake-parts";
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -15,14 +15,7 @@
         "x86_64-darwin"
       ];
       perSystem =
-        {
-          config,
-          self',
-          inputs',
-          pkgs,
-          system,
-          ...
-        }:
+        { pkgs, ... }:
         {
           devShells.default = pkgs.mkShell {
             packages = with pkgs; [

@@ -36,11 +36,11 @@
 		</div>
 	</div>
 	<a
-		class="block min-h-40 px-6 pt-7 pb-6"
+		class="block px-6 pt-7 pb-6"
 		href={`/stocks/${stock.symbol}`}
 		aria-label={`Read latest ${stock.name} news`}
 	>
-		<h3 class="mb-2 text-xl font-semibold tracking-tight">{stock.name}</h3>
-		<p class="text-sm leading-6 text-base-content/60">{stock.description}</p>
+		<h3 class="text-xl font-semibold tracking-tight">{stock.name}</h3>
+		<p class="mt-2 text-sm text-base-content/55">{stock.exchange} · {stock.country}</p>
 	</a>
 </article>

@@ -3,13 +3,13 @@
 	import { page } from '$app/state';
 	import StockHeader from '../../../lib/components/StockHeader.svelte';
 	import StockNews from '../../../lib/components/StockNews.svelte';
-	import { summaryNewsForStock } from '../../../lib/stocks.remote';
-	import { getStock, type StockNewsResult } from '../../../lib/stocks';
+	import { searchStocks, summaryNewsForStock } from '../../../lib/stocks.remote';
+	import type { StockNewsResult } from '../../../lib/stocks';
 
-	const symbol = page.params.symbol ?? '';
-	const foundStock = getStock(symbol);
-	if (!foundStock) error(404, `We could not find the stock symbol "${symbol.toUpperCase()}".`);
-	const stock = foundStock;
+	const symbol = page.params.symbol?.toUpperCase() ?? '';
+	const stockSearch = await searchStocks({ query: symbol });
+	const stock = stockSearch.candidates.find((candidate) => candidate.symbol === symbol);
+	if (!stock) error(404, `We could not find the stock symbol "${symbol}".`);
 
 	const newsQuery = summaryNewsForStock({
 		name: stock.name,

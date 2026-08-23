@@ -25,10 +25,16 @@ class Portfolio {
 		return this.stocks.some((stock) => stock.symbol === symbol.toUpperCase());
 	}
 
-	/** Adds a stock once, preserving alphabetical symbol order. */
+	/** Adds a stock once, preserving alphabetical symbol order and stored fields. */
 	follow(stock: Stock): void {
 		if (this.isFollowing(stock.symbol)) return;
-		this.stocks = sortStocks([...this.stocks, stock]);
+		const storedStock: Stock = {
+			name: stock.name,
+			symbol: stock.symbol,
+			exchange: stock.exchange,
+			country: stock.country
+		};
+		this.stocks = sortStocks([...this.stocks, storedStock]);
 		this.persist();
 	}
 
@@ -46,9 +52,7 @@ class Portfolio {
 function isStock(value: unknown): value is Stock {
 	if (!value || typeof value !== 'object') return false;
 	const stock = value as Record<string, unknown>;
-	return ['name', 'symbol', 'exchange', 'country', 'description'].every(
-		(key) => typeof stock[key] === 'string'
-	);
+	return ['name', 'symbol', 'exchange', 'country'].every((key) => typeof stock[key] === 'string');
 }
 
 /** The single client-side portfolio used throughout the application. */

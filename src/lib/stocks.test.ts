@@ -1,22 +1,18 @@
 import { describe, expect, it } from 'vitest';
-import { sortStocks } from './stocks';
+import { sortStocks, type Stock } from './stocks';
 
-const apple = {
+const apple: Stock = {
 	name: 'Apple Inc.',
 	symbol: 'AAPL',
 	exchange: 'NASDAQ',
-	country: 'United States',
-	confidence: 1,
-	description: 'Apple designs consumer electronics, software, and digital services.'
+	country: 'United States'
 };
 
-const microsoft = {
+const microsoft: Stock = {
 	name: 'Microsoft Corporation',
 	symbol: 'MSFT',
 	exchange: 'NASDAQ',
-	country: 'United States',
-	confidence: 1,
-	description: 'Microsoft develops software, cloud services, devices, and business applications.'
+	country: 'United States'
 };
 
 describe('sortStocks', () => {

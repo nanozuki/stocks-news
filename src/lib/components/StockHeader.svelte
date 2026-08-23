@@ -20,8 +20,8 @@
 			>
 			<span class="text-sm text-base-content/45">{stock.exchange}</span>
 		</div>
-		<h1 class="mb-3 text-4xl font-semibold tracking-tight sm:text-5xl">{stock.name}</h1>
-		<p class="max-w-2xl text-lg leading-7 text-base-content/60">{stock.description}</p>
+		<h1 class="text-4xl font-semibold tracking-tight sm:text-5xl">{stock.name}</h1>
+		<p class="mt-3 text-base-content/60">{stock.country}</p>
 	</div>
 	{#if portfolio.isFollowing(stock.symbol)}
 		<button class="btn shrink-0 btn-outline" onclick={() => portfolio.unfollow(stock.symbol)}
