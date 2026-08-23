@@ -1,17 +1,13 @@
-/** A public-company candidate returned by stock search. */
-export type StockCandidate = {
+/** A public-company returned by stock search. */
+export type Stock = {
 	name: string;
 	symbol: string;
 	exchange: string;
 	country: string;
-	confidence: number;
 };
 
 /** The result returned by the stock-search remote function. */
-export type ResolveStockResult = { candidates: StockCandidate[] };
-
-/** A stock stored in the local portfolio without search-ranking metadata. */
-export type Stock = Omit<StockCandidate, 'confidence'>;
+export type ResolveStockResult = { candidates: Stock[] };
 
 /** A source used by a generated stock-news summary. */
 export type NewsSource = {

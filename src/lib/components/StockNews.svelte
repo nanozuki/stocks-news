@@ -60,15 +60,18 @@
 		<div>
 			<p class="mb-3 text-xs font-bold tracking-wider text-base-content/45 uppercase">Sources</p>
 			<ul class="space-y-3">
-				{#each news.sources as source (source.url)}
-					<li>
-						<a
-							class="link text-sm font-medium link-hover"
-							href={source.url}
-							target="_blank"
-							rel="noopener noreferrer">{source.title} ↗</a
-						>
-						<p class="text-xs text-base-content/45">{source.publisher}</p>
+				{#each news.sources as source, index (source.url)}
+					<li class="flex items-baseline gap-3">
+						<span class="w-4 shrink-0 text-right font-mono text-xs text-primary">{index + 1}</span>
+						<div class="min-w-0 flex-1">
+							<a
+								class="link text-sm font-medium link-hover"
+								href={source.url}
+								target="_blank"
+								rel="noopener noreferrer">{source.title} ↗</a
+							>
+							<p class="text-xs text-base-content/45">{source.publisher}</p>
+						</div>
 					</li>
 				{/each}
 			</ul>

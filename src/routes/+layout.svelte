@@ -1,12 +1,11 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import './layout.css';
 	import favicon from '../lib/assets/favicon.svg';
 	import { portfolio } from '../lib/portfolio.svelte';
 
 	let { children } = $props();
 
-	onMount(() => portfolio.initialize());
+	portfolio.initialize();
 </script>
 
 <svelte:head>

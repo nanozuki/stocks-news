@@ -80,7 +80,9 @@
 }
 .news-article a {
 	color: var(--color-primary);
+	font-size: 0.78em;
 	font-weight: 600;
+	white-space: nowrap;
 	text-decoration: underline;
 	text-decoration-color: color-mix(in oklab, var(--color-primary) 35%, transparent);
 	text-underline-offset: 3px;

@@ -12,6 +12,10 @@ export function renderNewsMarkdown(markdown: string, sourceUrls: readonly string
 	parser.validateLink = (url) => /^https?:\/\//i.test(url) && allowedUrls.has(url);
 	parser.renderer.rules.link_open = (tokens, index, options, _env, renderer) => {
 		const token = tokens[index];
+		const label = tokens[index + 1];
+		if (label?.type === 'text' && /^\d+$/.test(label.content)) {
+			label.content = `[${label.content}]`;
+		}
 		token.attrSet('rel', 'noopener noreferrer');
 		token.attrSet('target', '_blank');
 		return renderer.renderToken(tokens, index, options);

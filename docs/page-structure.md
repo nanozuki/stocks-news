@@ -90,5 +90,5 @@ SvelteKit's error page handles invalid stock symbols and other missing routes. I
 ## Portfolio state
 
 This is a single-user application. One client-side object manages followed-stock state and persists
-it in `localStorage`. Stock detail pages resolve their symbol through the stock-search remote
-function before requesting news.
+it in `localStorage`. Stock detail pages read their symbol from this portfolio before requesting
+news. Visiting an unfollowed symbol returns a 404 response.

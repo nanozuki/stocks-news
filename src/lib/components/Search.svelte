@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { portfolio } from '../portfolio.svelte';
 	import { searchStocks } from '../stocks.remote';
-	import type { StockCandidate } from '../stocks';
+	import type { Stock } from '../stocks';
 
 	let query = $state('');
-	let candidates = $state<StockCandidate[] | null>(null);
+	let candidates = $state<Stock[] | null>(null);
 	let searching = $state(false);
 	let message = $state('');
 
@@ -23,7 +23,7 @@
 		}
 	}
 
-	function follow(candidate: StockCandidate) {
+	function follow(candidate: Stock) {
 		portfolio.follow(candidate);
 	}
 </script>

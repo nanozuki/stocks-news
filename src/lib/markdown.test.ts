@@ -15,6 +15,14 @@ describe('renderNewsMarkdown', () => {
 		expect(html).toContain('a bad link');
 	});
 
+	it('renders a numeric citation with visible brackets', () => {
+		const html = renderNewsMarkdown('Results improved. [1](https://example.com/results)', [
+			'https://example.com/results'
+		]);
+
+		expect(html).toContain('>[1]</a>');
+	});
+
 	it('escapes raw HTML and renders standard Markdown blocks', () => {
 		const html = renderNewsMarkdown(
 			'<script>alert(1)</script>\n\n## Events\n\n- **Earnings** reported\n- Guidance updated',

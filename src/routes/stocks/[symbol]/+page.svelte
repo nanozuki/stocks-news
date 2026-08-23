@@ -3,32 +3,48 @@
 	import { page } from '$app/state';
 	import StockHeader from '../../../lib/components/StockHeader.svelte';
 	import StockNews from '../../../lib/components/StockNews.svelte';
-	import { searchStocks, summaryNewsForStock } from '../../../lib/stocks.remote';
+	import { portfolio } from '../../../lib/portfolio.svelte';
+	import { summaryNewsForStock } from '../../../lib/stocks.remote';
 	import type { StockNewsResult } from '../../../lib/stocks';
 
+	portfolio.initialize();
 	const symbol = page.params.symbol?.toUpperCase() ?? '';
-	const stockSearch = await searchStocks({ query: symbol });
-	const stock = stockSearch.candidates.find((candidate) => candidate.symbol === symbol);
+	const stock = portfolio.findStock(symbol);
 	if (!stock) error(404, `We could not find the stock symbol "${symbol}".`);
+	const newsInput = { name: stock.name, symbol: stock.symbol, exchange: stock.exchange };
 
-	const newsQuery = summaryNewsForStock({
-		name: stock.name,
-		symbol: stock.symbol,
-		exchange: stock.exchange
-	});
-	let news = $state<StockNewsResult | null>(null);
+	let newsQuery: ReturnType<typeof summaryNewsForStock> | undefined;
+	let news = $state<StockNewsResult | null>(portfolio.findNews(symbol) ?? null);
 	let newsError = $state(false);
 	let refreshing = $state(false);
 	let requestVersion = 0;
 
+	function getNewsQuery(): ReturnType<typeof summaryNewsForStock> {
+		newsQuery ??= summaryNewsForStock(newsInput);
+		return newsQuery;
+	}
+
 	async function loadNews(refresh: boolean): Promise<void> {
 		const version = ++requestVersion;
+		if (!refresh) {
+			const cachedNews = portfolio.findNews(symbol);
+			if (cachedNews) {
+				news = cachedNews;
+				newsError = false;
+				return;
+			}
+		}
+
 		refreshing = true;
 		newsError = false;
 		try {
-			if (refresh) await newsQuery.refresh();
-			else await newsQuery;
-			if (version === requestVersion && newsQuery.ready) news = newsQuery.current;
+			const query = getNewsQuery();
+			if (refresh) await query.refresh();
+			else await query;
+			if (version === requestVersion && query.ready) {
+				news = query.current;
+				portfolio.setNews(symbol, query.current);
+			}
 		} catch {
 			if (version === requestVersion) newsError = true;
 		} finally {
