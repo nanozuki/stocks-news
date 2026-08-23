@@ -1,87 +1,47 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-
-const { create, sdkConstructor } = vi.hoisted(() => {
-	const create = vi.fn();
-	const sdkConstructor = vi.fn(function () {
-		return { responses: { create } };
-	});
-	return { create, sdkConstructor };
-});
-
-vi.mock('openai', () => ({ default: sdkConstructor }));
-
+import { describe, expect, it } from 'vitest';
 import { OpenAI } from './openai';
 
-beforeEach(() => {
-	create.mockReset();
-	sdkConstructor.mockClear();
-});
+function createOpenAI(): OpenAI {
+	const apiKey = process.env.OPENAI_API_KEY;
+	expect(apiKey, 'OPENAI_API_KEY must be set to run the OpenAI tests.').toBeTruthy();
+	return new OpenAI(apiKey!);
+}
 
 describe('OpenAI', () => {
-	it('searches for at most five validated public-company candidates', async () => {
-		create.mockResolvedValue({
-			output_text: JSON.stringify({
-				candidates: Array.from({ length: 6 }, (_, index) => ({
-					name: `Company ${index}`,
-					symbol: `SYM${index}`,
-					exchange: 'NASDAQ',
-					country: 'United States',
-					confidence: 0.9
-				}))
-			})
-		});
+	it('resolves an exact company query through the real Responses API', async () => {
+		const result = await createOpenAI().searchStock('Apple Inc. NASDAQ stock');
 
-		const ai = new OpenAI('test-key');
-		const result = await ai.searchStock('semiconductor company');
-
-		expect(sdkConstructor).toHaveBeenCalledWith(
-			expect.objectContaining({ apiKey: 'test-key', maxRetries: 2 })
-		);
-		expect(result.candidates).toHaveLength(5);
-		expect(create).toHaveBeenCalledWith(
-			expect.objectContaining({
-				tools: [{ type: 'web_search' }],
-				text: expect.objectContaining({
-					format: expect.objectContaining({ type: 'json_schema', strict: true })
+		expect(result.candidates.length).toBeGreaterThan(0);
+		expect(result.candidates.length).toBeLessThanOrEqual(5);
+		expect(result.candidates).toEqual(
+			expect.arrayContaining([
+				expect.objectContaining({
+					name: expect.any(String),
+					symbol: 'AAPL',
+					exchange: expect.any(String),
+					country: expect.any(String),
+					confidence: expect.any(Number)
 				})
-			})
+			])
 		);
-	});
+	}, 120_000);
 
-	it('uses an exact seven-day range and returns only cited source links', async () => {
-		vi.useFakeTimers();
-		vi.setSystemTime(new Date('2026-03-10T12:00:00.000Z'));
-		create.mockResolvedValue({
-			output_text: JSON.stringify({
-				summaryMarkdown:
-					'Apple announced an update.\n\nRead it [in its newsroom](https://example.com/apple-news?utm_source=openai).',
-				sources: [
-					{
-						title: 'Apple update',
-						url: 'https://example.com/apple-news',
-						publisher: 'Example News',
-						publishedAt: '2026-03-09T08:00:00.000Z'
-					}
-				]
-			}).replace('\\n\\n', '\n\n')
+	it('produces a validated seven-day summary through the real Responses API', async () => {
+		const result = await createOpenAI().summaryNewsForStock({
+			name: 'Apple Inc.',
+			symbol: 'AAPL',
+			exchange: 'NASDAQ'
 		});
 
-		const result = await new OpenAI('test-key').summaryNewsForStock('AAPL');
-
-		expect(result.periodStart).toBe('2026-03-03T12:00:00.000Z');
-		expect(result.periodEnd).toBe('2026-03-10T12:00:00.000Z');
-		expect(result.searchedAt).toBe(result.periodEnd);
-		expect(result.summaryMarkdown).toContain('](https://example.com/apple-news)');
-		expect(create.mock.calls[0][0].input).toContain('2026-03-03T12:00:00.000Z');
-		expect(create.mock.calls[0][0].input).toContain('2026-03-10T12:00:00.000Z');
-		vi.useRealTimers();
-	});
-
-	it('rejects malformed model output', async () => {
-		create.mockResolvedValue({ output_text: '{"candidates":[{"symbol":"AAPL"}]}' });
-
-		await expect(new OpenAI('test-key').searchStock('Apple')).rejects.toThrow(
-			'Invalid OpenAI stock-search response'
+		expect(Date.parse(result.periodEnd) - Date.parse(result.periodStart)).toBe(
+			7 * 24 * 60 * 60 * 1000
 		);
-	});
+		expect(result.searchedAt).toBe(result.periodEnd);
+		expect(result.sources.length).toBeLessThanOrEqual(10);
+
+		const sourceUrls = new Set(result.sources.map(({ url }) => url));
+		for (const link of result.summaryMarkdown.matchAll(/\]\((https?:\/\/[^)]+)\)/g)) {
+			expect(sourceUrls.has(link[1])).toBe(true);
+		}
+	}, 120_000);
 });

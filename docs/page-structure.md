@@ -76,7 +76,11 @@ contains:
 
 - A "Latest news" heading
 - The time the summary was last updated
+- A refresh button that requests a new summary without reloading the page
 - The summary rendered from Markdown, with links to source material included inline
+
+The refresh button keeps the current summary visible and remains disabled while the replacement is
+loading.
 
 ## Error page
 

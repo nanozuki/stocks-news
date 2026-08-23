@@ -2,7 +2,11 @@
 	import { renderNewsMarkdown } from '../markdown';
 	import type { StockNewsResult } from '../stocks';
 
-	let { news }: { news: StockNewsResult } = $props();
+	let {
+		news,
+		refreshing,
+		onrefresh
+	}: { news: StockNewsResult; refreshing: boolean; onrefresh: () => void } = $props();
 	const dateFormat = new Intl.DateTimeFormat(undefined, {
 		dateStyle: 'medium',
 		timeStyle: 'short'
@@ -22,9 +26,21 @@
 			class="mb-7 flex flex-wrap items-center justify-between gap-3 border-b border-base-300 pb-5"
 		>
 			<h2 id="latest-news-title" class="text-2xl font-semibold tracking-tight">Latest news</h2>
-			<p class="text-xs text-base-content/45">
-				Updated {dateFormat.format(new Date(news.searchedAt))}
-			</p>
+			<div class="flex items-center gap-3">
+				<p class="text-xs text-base-content/45">
+					Updated {dateFormat.format(new Date(news.searchedAt))}
+				</p>
+				<button
+					type="button"
+					class="btn btn-soft btn-primary btn-sm"
+					disabled={refreshing}
+					onclick={onrefresh}
+					aria-label={refreshing ? 'Refreshing news' : 'Refresh news'}
+				>
+					{#if refreshing}<span class="loading loading-xs loading-spinner"></span>{/if}
+					{refreshing ? 'Refreshing' : 'Refresh'}
+				</button>
+			</div>
 		</div>
 		<!-- renderNewsMarkdown escapes HTML and restricts links to the returned source set. -->
 		<!-- eslint-disable-next-line svelte/no-at-html-tags -->
