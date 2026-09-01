@@ -1,11 +1,11 @@
 <script lang="ts">
 	import './layout.css';
 	import favicon from '../lib/assets/favicon.svg';
-	import { portfolio } from '../lib/portfolio.svelte';
+	import { Portfolio, portfolioContext } from '../lib/portfolio.svelte';
 
 	let { children } = $props();
 
-	portfolio.initialize();
+	portfolioContext.set(new Portfolio());
 </script>
 
 <svelte:head>

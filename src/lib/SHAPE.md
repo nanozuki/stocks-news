@@ -106,54 +106,62 @@ Source URL supplied by OpenAI.
 
 ## `portfolio.svelte.ts`
 
-Owns the application's singleton reactive portfolio and its browser persistence.
-Importing the module creates the singleton but does not read or write
-`localStorage` until a public mutation or initialization runs in a browser.
+Defines browser-persisted portfolio instances and the Runed context used to
+share one instance through the component tree. Importing the module defines Zod
+schemas and the context without accessing browser storage. Constructing a
+portfolio creates its sole `PersistedState` field, which reads or initializes
+`localStorage`, synchronizes changes across tabs, and uses Zod to validate and
+strip stored data.
 
-### `const portfolio`
+### `class Portfolio`
 
-The singleton reactive portfolio shared by application components.
+A reactive collection of followed stocks and cached news backed by one Runed
+`PersistedState`. Create it during component initialization and provide it
+through `portfolioContext`.
 
-### `portfolio.findNews(symbol: string): StockNewsResult | undefined`
+### `Portfolio.constructor()`
+
+Creates a portfolio backed by the `stock-news:portfolio` local-storage entry. It
+accepts the current stock-and-news object and migrates the older stock-array
+format. Zod strips unknown fields and discards invalid stock and news entries;
+malformed JSON or an invalid outer value produces an empty portfolio.
+
+### `Portfolio.findNews(symbol: string): StockNewsResult | undefined`
 
 Returns cached news for a case-insensitive symbol, or `undefined` when none
 exists.
 
-### `portfolio.findStock(symbol: string): Stock | undefined`
+### `Portfolio.findStock(symbol: string): Stock | undefined`
 
 Returns the followed stock for a case-insensitive symbol, or `undefined` when
 none exists.
 
-### `portfolio.follow(stock: Stock): void`
+### `Portfolio.follow(stock: Stock): void`
 
 Adds a stock when its symbol is not already followed, keeps stocks sorted by
-symbol, drops fields outside the `Stock` type, and persists the new state in a
-browser.
+symbol, drops fields outside the `Stock` type, and updates persisted state.
 
-### `portfolio.initialize(): void`
-
-Loads persisted portfolio state from browser `localStorage` once. It accepts the
-current stock-and-news object and migrates the older stock-array format,
-discards invalid entries, and removes malformed JSON. It does nothing during
-server execution or after successful initialization.
-
-### `portfolio.isFollowing(symbol: string): boolean`
+### `Portfolio.isFollowing(symbol: string): boolean`
 
 Reports whether a stock with the case-insensitive symbol is followed.
 
-### `portfolio.setNews(symbol: string, news: StockNewsResult): void`
+### `Portfolio.setNews(symbol: string, news: StockNewsResult): void`
 
-Caches and persists news under an uppercase symbol only when that stock is
+Caches news under an uppercase symbol in persisted state only when that stock is
 followed.
 
-### `portfolio.stocks: Stock[]`
+### `Portfolio.stocks: Stock[]`
 
 Reactive followed stocks sorted alphabetically by symbol.
 
-### `portfolio.unfollow(symbol: string): void`
+### `Portfolio.unfollow(symbol: string): void`
 
-Removes the case-insensitive symbol and its cached news, then persists the
-resulting state in a browser.
+Removes the case-insensitive symbol and its cached news from persisted state.
+
+### `const portfolioContext`
+
+Runed component context for providing and retrieving the nearest `Portfolio`.
+Its `set` and `get` methods must be called during component initialization.
 
 ## `stock_storage.ts`
 

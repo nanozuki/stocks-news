@@ -3,11 +3,11 @@
 	import { page } from '$app/state';
 	import StockHeader from '../../../lib/components/StockHeader.svelte';
 	import StockNews from '../../../lib/components/StockNews.svelte';
-	import { portfolio } from '../../../lib/portfolio.svelte';
+	import { portfolioContext } from '../../../lib/portfolio.svelte';
 	import { summaryNewsForStock } from '../../../lib/stocks.remote';
 	import type { StockNewsResult } from '../../../lib/stocks';
 
-	portfolio.initialize();
+	const portfolio = portfolioContext.get();
 	const symbol = page.params.symbol?.toUpperCase() ?? '';
 	const stock = portfolio.findStock(symbol);
 	if (!stock) error(404, `We could not find the stock symbol "${symbol}".`);

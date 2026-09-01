@@ -1,10 +1,17 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { portfolio } from './portfolio.svelte';
+import { Portfolio } from './portfolio.svelte';
 import type { Stock, StockNewsResult } from './stocks';
 
 const apple: Stock = {
 	name: 'Apple Inc.',
 	symbol: 'AAPL',
+	exchange: 'NASDAQ',
+	country: 'United States'
+};
+
+const google: Stock = {
+	name: 'Alphabet Inc.',
+	symbol: 'GOOG',
 	exchange: 'NASDAQ',
 	country: 'United States'
 };
@@ -25,8 +32,29 @@ const appleNews: StockNewsResult = {
 };
 
 describe('portfolio', () => {
-	beforeEach(() => portfolio.unfollow(apple.symbol));
-	afterEach(() => portfolio.unfollow(apple.symbol));
+	let portfolio: Portfolio;
+
+	beforeEach(() => {
+		localStorage.removeItem('stock-news:portfolio');
+		portfolio = new Portfolio();
+	});
+	afterEach(() => localStorage.removeItem('stock-news:portfolio'));
+
+	it('parses persisted state with Zod and discards invalid data', () => {
+		localStorage.setItem(
+			'stock-news:portfolio',
+			JSON.stringify({
+				stocks: [{ ...google, ignored: true }, { name: 'Invalid stock' }],
+				news: { GOOG: appleNews, INVALID: { summaryMarkdown: 42 } }
+			})
+		);
+
+		const restoredPortfolio = new Portfolio();
+
+		expect(restoredPortfolio.findStock(google.symbol)).toEqual(google);
+		expect(restoredPortfolio.findNews(google.symbol)).toEqual(appleNews);
+		expect(restoredPortfolio.findNews('INVALID')).toBeUndefined();
+	});
 
 	it('finds a followed stock by symbol without regard to case', () => {
 		portfolio.follow(apple);

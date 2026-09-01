@@ -1,7 +1,8 @@
 <script lang="ts">
-	import { portfolio } from '../portfolio.svelte';
+	import { portfolioContext } from '../portfolio.svelte';
 	import type { Stock } from '../stocks';
 
+	const portfolio = portfolioContext.get();
 	let { stock }: { stock: Stock } = $props();
 </script>
 

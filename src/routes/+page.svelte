@@ -1,7 +1,9 @@
 <script lang="ts">
 	import Search from '../lib/components/Search.svelte';
 	import StockList from '../lib/components/StockList.svelte';
-	import { portfolio } from '../lib/portfolio.svelte';
+	import { portfolioContext } from '../lib/portfolio.svelte';
+
+	const portfolio = portfolioContext.get();
 </script>
 
 <svelte:head>

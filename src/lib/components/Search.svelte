@@ -1,8 +1,9 @@
 <script lang="ts">
-	import { portfolio } from '../portfolio.svelte';
+	import { portfolioContext } from '../portfolio.svelte';
 	import { searchStocks } from '../stocks.remote';
 	import type { Stock } from '../stocks';
 
+	const portfolio = portfolioContext.get();
 	let query = $state('');
 	let candidates = $state<Stock[] | null>(null);
 	let searching = $state(false);

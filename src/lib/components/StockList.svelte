@@ -1,6 +1,8 @@
 <script lang="ts">
-	import { portfolio } from '../portfolio.svelte';
+	import { portfolioContext } from '../portfolio.svelte';
 	import Stock from './Stock.svelte';
+
+	const portfolio = portfolioContext.get();
 </script>
 
 <section aria-labelledby="portfolio-title">

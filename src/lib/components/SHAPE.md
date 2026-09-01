@@ -5,9 +5,9 @@ and rendered news.
 
 ## `Search.svelte`
 
-Renders a company search form and candidate list. Submitting calls the
-stock-search remote function, and following a result mutates the shared
-portfolio. The component has no props.
+Retrieves the shared portfolio from Runed context and renders a company search
+form and candidate list. Submitting calls the stock-search remote function, and
+following a result mutates the portfolio. The component has no props.
 
 ## `Stock.svelte`
 
@@ -23,8 +23,8 @@ Required stock displayed by the card and used to build its detail link.
 
 ## `StockHeader.svelte`
 
-Renders a stock-detail heading and a follow or unfollow button backed by the
-shared portfolio.
+Retrieves the shared portfolio from Runed context and renders a stock-detail
+heading with a follow or unfollow button backed by that portfolio.
 
 ### `props.stock: Stock`
 
@@ -32,8 +32,9 @@ Required stock whose identity and current follow state the header displays.
 
 ## `StockList.svelte`
 
-Renders the shared portfolio as stock cards or an empty-state message. Unfollow
-actions mutate the portfolio. The component has no props.
+Retrieves the shared portfolio from Runed context and renders it as stock cards
+or an empty-state message. Unfollow actions mutate the portfolio. The component
+has no props.
 
 ## `StockNews.svelte`
 

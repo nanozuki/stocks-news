@@ -44,6 +44,7 @@
 	"dependencies": {
 		"markdown-it": "^15.0.0",
 		"openai": "^7.5.0",
+		"runed": "^0.37.1",
 		"zod": "^4.4.3"
 	}
 }

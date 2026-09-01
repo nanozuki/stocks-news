@@ -11,9 +11,9 @@ portfolio, and sets the document title from the status.
 ## `+layout.svelte`
 
 Renders the persistent application navigation, active child route, and
-disclaimer. Loading the component imports global styles. Constructing it
-initializes the browser-backed portfolio and sets the document favicon and theme
-color.
+disclaimer. Loading the component imports global styles. Constructing it creates
+the browser-backed portfolio, provides it to descendants through Runed context,
+and sets the document favicon and theme color.
 
 ### `props.children`
 
@@ -21,8 +21,9 @@ Required snippet containing the active child route.
 
 ## `+page.svelte`
 
-Renders the portfolio home page with its introductory copy, stock search, and
-followed-stock list, and sets the document title and description.
+Retrieves the portfolio from Runed context, renders the home page with its
+introductory copy, stock search, and followed-stock list, and sets the document
+title and description.
 
 ## `layout.css`
 
