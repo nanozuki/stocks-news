@@ -6,7 +6,10 @@ const config = {
 	printWidth: 100,
 	proseWrap: 'always',
 	plugins: ['prettier-plugin-svelte', 'prettier-plugin-tailwindcss'],
-	overrides: [{ files: '*.svelte', options: { parser: 'svelte' } }],
+	overrides: [
+		{ files: '*.svelte', options: { parser: 'svelte' } },
+		{ files: '*.md', options: { printWidth: 80 } }
+	],
 	tailwindStylesheet: './src/routes/layout.css'
 };
 
