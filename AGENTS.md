@@ -1,3 +1,8 @@
+# Shape-driven development
+
+- Before reading or changing a code file, check the same directory for `SHAPE.md`. If present, load
+  and follow the `shape` skill.
+
 # Project architecture
 
 - This is a client-side rendered SvelteKit application. Preserve its CSR architecture when changing
