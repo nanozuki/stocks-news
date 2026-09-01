@@ -1,5 +1,6 @@
 import { query } from '$app/server';
 import { OpenAI } from './openai';
+import { StockStorage } from './stock_storage';
 import type {
 	ResolveStockResult,
 	SearchStocksInput,
@@ -36,6 +37,8 @@ function assertNewsInput(input: SummaryNewsInput): void {
 	}
 }
 
+const stockCaches = new StockStorage();
+
 /** Resolves submitted text to public-company candidates through OpenAI. */
 export const searchStocks = query<SearchStocksInput, ResolveStockResult>(
 	'unchecked',
@@ -50,6 +53,14 @@ export const summaryNewsForStock = query<SummaryNewsInput, StockNewsResult>(
 	'unchecked',
 	async (input) => {
 		assertNewsInput(input);
-		return getOpenAI().summaryNewsForStock(input);
+		const news = stockCaches.getNews(input.symbol);
+		console.log('get news from caches', news);
+		if (news) {
+			return news;
+		}
+		const result = await getOpenAI().summaryNewsForStock(input);
+		stockCaches.setNews(input.symbol, result);
+		console.log('set news to cache', news);
+		return result;
 	}
 );
