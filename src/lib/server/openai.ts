@@ -2,7 +2,7 @@
 
 import OpenAIClient from 'openai';
 import { z } from 'zod';
-import type { NewsSource, ResolveStockResult, StockNewsResult, SummaryNewsInput } from './stocks';
+import type { NewsSource, ResolveStockResult, StockNewsResult, SummaryNewsInput } from '../stocks';
 
 const MAX_SEARCH_RESULTS = 5;
 const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;

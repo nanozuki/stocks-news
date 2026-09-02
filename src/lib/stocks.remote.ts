@@ -1,5 +1,5 @@
 import { query } from '$app/server';
-import { OpenAI } from './openai';
+import { OpenAI } from './server/openai';
 import { StockStorage } from './stock_storage';
 import type {
 	ResolveStockResult,
